@@ -292,15 +292,15 @@ function NodeGraph(){
     var right = $(".node .right").last();
     var bottom = $(".node .bottom").last();
     
-    setupConnection(left);
-    setupConnection(right);
-    setupConnection(top);
-    setupConnection(bottom);
+    curr.setupConnection(left);
+    curr.setupConnection(right);
+    curr.setupConnection(top);
+    curr.setupConnection(bottom);
     
-    positionLeft();
-    positionRight();
-    positionTop();
-    positionBottom();
+    curr.positionLeft();
+    curr.positionRight();
+    curr.positionTop();
+    curr.positionBottom();
     
     this.left = left;
     this.right = right;
