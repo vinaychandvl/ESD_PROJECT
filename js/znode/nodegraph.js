@@ -307,7 +307,7 @@ function NodeGraph(){
     this.top = top;
     this.bottom = bottom;
     
-    this.updateConnections = updateConnections;
+    this.updateConnections = curr.updateConnections();
     
     left.mousedown(addLink);
     right.mousedown(addLink);
@@ -327,11 +327,11 @@ function NodeGraph(){
         
         /*txt.css({"width" : n.width() - 5, "height" : n.height() - bar.height() - 5});*/
         
-        positionLeft();
-        positionRight();
-        positionTop();
-        positionBottom();
-        updateConnections();
+        curr.positionLeft();
+        curr.positionRight();
+        curr.positionTop();
+        curr.positionBottom();
+        curr.updateConnections();
       });
     });
     
