@@ -302,12 +302,12 @@ function NodeGraph(){
     curr.positionTop();
     curr.positionBottom();
     
-    this.left = left;
-    this.right = right;
-    this.top = top;
-    this.bottom = bottom;
+    curr.left = left;
+    curr.right = right;
+    curr.top = top;
+    curr.bottom = bottom;
     
-    this.updateConnections = curr.updateConnections();
+    curr.updateConnections = n.updateConnections();
     
     left.mousedown(addLink);
     right.mousedown(addLink);
@@ -409,10 +409,10 @@ function NodeGraph(){
         var y = loc.top;
         n.css({"width" : x + resizer.width()+2,"height" : y + resizer.height()+2});
         
-        positionLeft();
-        positionRight();
-        positionTop();
-        positionBottom();
+        curr.positionLeft();
+        curr.positionRight();
+        curr.positionTop();
+        curr.positionBottom();
     }
 /***********************************************************************************************************************/
 
