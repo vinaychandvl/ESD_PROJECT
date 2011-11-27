@@ -263,10 +263,10 @@ function NodeGraph(){
         if (confirm("Are you sure you want to delete this Method?")){
           newmethod.remove();
           --numMethod;
-          resizeNode(numField, numMethod);
+          curr.resizeNode(numField, numMethod);
         }
       });
-    resizeNode(numField, numMethod);
+    curr.resizeNode(numField, numMethod);
     });
     
     
