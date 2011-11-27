@@ -263,10 +263,10 @@ function NodeGraph(){
         if (confirm("Are you sure you want to delete this Method?")){
           newmethod.remove();
           --numMethod;
-          curr.resizeNode(numField, numMethod);
+          resizeNode(numField, numMethod);
         }
       });
-    curr.resizeNode(numField, numMethod);
+    resizeNode(numField, numMethod);
     });
     
     
@@ -292,22 +292,22 @@ function NodeGraph(){
     var right = $(".node .right").last();
     var bottom = $(".node .bottom").last();
     
-    curr.setupConnection(left);
-    curr.setupConnection(right);
-    curr.setupConnection(top);
-    curr.setupConnection(bottom);
+    setupConnection(left);
+    setupConnection(right);
+    setupConnection(top);
+    setupConnection(bottom);
     
-    curr.positionLeft();
-    curr.positionRight();
-    curr.positionTop();
-    curr.positionBottom();
+    positionLeft();
+    positionRight();
+    positionTop();
+    positionBottom();
     
-    curr.left = left;
-    curr.right = right;
-    curr.top = top;
-    curr.bottom = bottom;
+    this.left = left;
+    this.right = right;
+    this.top = top;
+    this.bottom = bottom;
     
-    curr.updateConnections = n.updateConnections();
+    this.updateConnections = updateConnections;
     
     left.mousedown(addLink);
     right.mousedown(addLink);
@@ -327,11 +327,11 @@ function NodeGraph(){
         
         /*txt.css({"width" : n.width() - 5, "height" : n.height() - bar.height() - 5});*/
         
-        curr.positionLeft();
-        curr.positionRight();
-        curr.positionTop();
-        curr.positionBottom();
-        curr.updateConnections();
+        positionLeft();
+        positionRight();
+        positionTop();
+        positionBottom();
+        updateConnections();
       });
     });
     
@@ -359,7 +359,7 @@ function NodeGraph(){
 /***********************************************************************************************************************/
 /* This function positions the left connector                                                                          */
 /***********************************************************************************************************************/
-    this.positionLeft = function(){
+    function positionLeft(){
       left.css("top", n.height() / 2 - 5);
     }
 /***********************************************************************************************************************/
@@ -367,7 +367,7 @@ function NodeGraph(){
 /***********************************************************************************************************************/
 /* This function positions the right connector                                                                         */
 /***********************************************************************************************************************/
-    this.positionRight = function(){
+    function positionRight(){
       right.css("left",n.width() + 1).css("top", n.height() / 2 - 5);
     }
 /***********************************************************************************************************************/
@@ -375,7 +375,7 @@ function NodeGraph(){
 /***********************************************************************************************************************/
 /* This function positions the top connector                                                                           */
 /***********************************************************************************************************************/
-    this.positionTop = function(){
+    function positionTop(){
       top.css("left", n.width() / 2 - 5);
     }
 /***********************************************************************************************************************/
@@ -383,7 +383,7 @@ function NodeGraph(){
 /***********************************************************************************************************************/
 /* This function positions the bottom connector                                                                        */
 /***********************************************************************************************************************/
-    this.positionBottom = function(){
+    function positionBottom(){
       bottom.css("top",n.height() + 1).css("left", n.width() / 2 - 5);
     }
 /***********************************************************************************************************************/
@@ -391,7 +391,7 @@ function NodeGraph(){
 /***********************************************************************************************************************/
 /* This function creates the corrsponding (left, right, top or bottom) connector                                       */
 /***********************************************************************************************************************/
-    this.setupConnection = function(div){
+    function setupConnection(div){
       div.css({"position" : "absolute", "width" : "10px", "padding":0,
                "height" : "10px", "background-color" : "#aaaaaa",
                "font-size" : "1px", "cursor" : "pointer"});
@@ -401,7 +401,7 @@ function NodeGraph(){
 /***********************************************************************************************************************/
 /* This function resizes the node when a new field or method is added                                                  */
 /***********************************************************************************************************************/
-    this.resizeNode = function(numField, numMethod){
+    function resizeNode(numField, numMethod){
         var nodeHeight = 70 + (numField + numMethod)*12; 
         resizer.css({"top":nodeHeight - 10});
         var loc = resizer.position();
@@ -409,10 +409,10 @@ function NodeGraph(){
         var y = loc.top;
         n.css({"width" : x + resizer.width()+2,"height" : y + resizer.height()+2});
         
-        curr.positionLeft();
-        curr.positionRight();
-        curr.positionTop();
-        curr.positionBottom();
+        positionLeft();
+        positionRight();
+        positionTop();
+        positionBottom();
     }
 /***********************************************************************************************************************/
 
@@ -432,7 +432,7 @@ function NodeGraph(){
 /***********************************************************************************************************************/
 /*
 /***********************************************************************************************************************/
-    this.updateConnections = function(){
+    function updateConnections(){
        for (var i in curr.connections){
          var c = curr.connections[i];
          if (!c.removed){
@@ -448,7 +448,7 @@ function NodeGraph(){
 /***********************************************************************************************************************/
 /*
 /***********************************************************************************************************************/
-    this.addLink = function(e){
+    function addLink(e){
       currentNode = curr;
       e.preventDefault();
       showOverlay();
