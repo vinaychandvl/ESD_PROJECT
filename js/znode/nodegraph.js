@@ -480,9 +480,9 @@ function NodeGraph(){
     this.remove = function(){
      for (var i in curr.connections){
        var c = curr.connections[i];
-       c.remove();
+       curr.connections[i].remove();
        delete connections[c.id];
-       delete c;
+       delete curr.connections[i];
      }
      n.remove();
      delete nodes[curr.id];
