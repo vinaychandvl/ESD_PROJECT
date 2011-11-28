@@ -647,14 +647,14 @@ function NodeGraph(){
       var addreturns = n.txt.replace(/\\n/g,'\n');
       temp.txt.val(addreturns);
     }
-    for (var j in data.fields){
-        nodes[data.fields[j].node].addField(data.fields[j].name);
+    for (i in data.fields){
+        nodes[data.fields[i].node].addField(data.fields[i].name);
     }
-    for (var k in data.methods){
-        nodes[data.methods[k].node].addMethod(data.methods[k].name);
+    for (i in data.methods){
+        nodes[data.methods[i].node].addMethod(data.methods[i].name);
     }
-    for (var j in data.connections){
-      var c = data.connections[j];
+    for (i in data.connections){
+      var c = data.connections[i];
       createConnection(nodes[c.nodeA], c.conA, nodes[c.nodeB], c.conB);
     }
   }
