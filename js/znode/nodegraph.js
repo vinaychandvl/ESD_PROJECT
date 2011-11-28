@@ -20,7 +20,7 @@ function NodeGraph(){
   var SHIFT = 16;
   var topHeight = $("#controls").height();
   var defaultWidth = 100;
-  var defaultHeight = 70;
+  var defaultHeight = 84;
   var paper = new Raphael("canvas", "100", "100");
   var numM = 0;
   var numF = 0;
@@ -154,7 +154,7 @@ function NodeGraph(){
 /***********************************************************************************************************************/
 /* NODE CLASS                                                                                                          */
 /***********************************************************************************************************************/
-  function Node(xp, yp, w, h, noDelete, forceId){
+  function Node(xp, yp, w, h, noDelete, forceId, classname){
     
     if (forceId){
        nodeId = forceId;
@@ -162,6 +162,11 @@ function NodeGraph(){
     this.id = nodeId;
     nodes[nodeId] = this;
     nodeId++;
+    this.name = classname;
+    if (this.name == null){
+    var cn = prompt(" enter class name ");
+    this.name = cn;
+    }
     
     var numField = 0;
     var numMethod = 0;
@@ -182,10 +187,10 @@ function NodeGraph(){
     var nodeWidth = n.width();
     var nodeHeight = n.height();
            
-    n.append("<div class='bar'/>");
+    n.append("<div class='bar'>"+ curr.name+"<\/div>");
     var bar = $(".node .bar").last();
-    bar.css({"height" : "10px", "background-color" : "gray","padding" : "0", 
-            "margin": "0", "font-size" : "9px", "cursor" : "pointer"});
+    bar.css({"height" : "10px", "background-color" : "gray","padding" : "0", "color":"white", 
+            "margin": "0", "font-size" : "9px", "cursor" : "pointer","text-align":"center"});
 
     n.append("<div class='code'>Code<\/div>");
     var code = $(".node .code").last();
@@ -213,7 +218,7 @@ function NodeGraph(){
     
     n.append("<textarea class='txt' spellcheck='false' />");
     var txt = $(".node .txt").last();
-    txt.css({"width" :"100%","height" : "10px","resize" : "none", "overflow" : "hidden",
+    txt.css({"width" :"95%","height" : "24px","resize" : "none", "overflow" : "hidden",
              "font-size" : "12px" , "font-family" : "sans-serif", "border" : "none","z-index":4});
           
     this.txt = txt;
@@ -355,7 +360,7 @@ function NodeGraph(){
     this.addField = function(name){
       var fieldmenu = curr.content.find(".fieldmenu").last();
       fieldmenu.append("<div class='subfields'><div class='fieldname'>"+name+"<\/div><div class='closeattr'>x<\/div><\/div>");
-      nodeFields[numF] = {"id":numField,"name":name,"node":curr.id};
+      nodeFields[numF] = {"id":numF,"name":name,"node":curr.id};
       ++numField;
       ++numF;
     }
@@ -367,7 +372,7 @@ function NodeGraph(){
     this.addMethod = function(name){
       var methodmenu = curr.content.find(".methodmenu").last();
       methodmenu.append("<div class='submethods'><div class='methodname'>"+name+"<\/div><div class='closeattr'>x<\/div><\/div>");
-      nodeMethods[numM] = {"id":numMethod,"name":name,"node":curr.id};
+      nodeMethods[numM] = {"id":numM,"name":name,"node":curr.id};
       ++numMethod;
       ++numM;
     }
@@ -429,7 +434,7 @@ function NodeGraph(){
 /* This function resizes the node when a new field or method is added                                                  */
 /***********************************************************************************************************************/
     function resizeNode(numField, numMethod){
-        var nodeHeight = 70 + (numField + numMethod)*12; 
+        var nodeHeight = 84 + (numField + numMethod)*12; 
         resizer.css({"top":nodeHeight - 10});
         var loc = resizer.position();
         var x = loc.left;
@@ -643,7 +648,7 @@ function NodeGraph(){
     for (var i in data.nodes){
       var n = data.nodes[i];
       //var ex = (i == "0") ? true : false;
-      var temp = new Node(n.x, n.y, n.width, n.height,false, n.id);
+      var temp = new Node(n.x, n.y, n.width, n.height,false, n.id,n.name);
       var addreturns = n.txt.replace(/\\n/g,'\n');
       temp.txt.val(addreturns);
     }
@@ -672,7 +677,8 @@ function NodeGraph(){
       json += '"y" : ' + n.y() + ', ';
       json += '"width" : ' + n.width() + ', ';
       json += '"height" : ' + n.height() + ', ';
-      json += '"txt" : "' + addSlashes(n.txt.val()) + '"},';
+      json += '"txt" : "' + addSlashes(n.txt.val()) + '", ';
+      json += '"name" : "' + n.name + '"},';
     }
       json = json.substr(0, json.length - 1);
       json += '], "fields" : ['
