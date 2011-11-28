@@ -676,20 +676,20 @@ function NodeGraph(){
     }
       json = json.substr(0, json.length - 1);
       json += '], "fields" : ['
-      for (var j in nodeFields){
-          var f = nodeFields[j];
-          json += '{"id" : ' + f.id + ', ';
-          json += '"name" : "' + f.name + '", ';
-          json += '"node" : ' + f.node + '},';
-      }
+    for (i in nodeFields){
+       var f = nodeFields[i];
+       json += '{"id" : ' + f.id + ', ';
+       json += '"name" : "' + f.name + '", ';
+       json += '"node" : ' + f.node + '},';
+    }
     json = json.substr(0, json.length - 1);
     json += '], "methods" : ['
-    for (var k in nodeMethods){
-          var m = nodeMethods[k];
-          json += '{"id" : ' + m.id + ', ';
-          json += '"name" : "' + m.name + '", ';
-          json += '"node" : ' + m.node + '},';
-      }
+    for (i in nodeMethods){
+       var m = nodeMethods[i];
+       json += '{"id" : ' + m.id + ', ';
+       json += '"name" : "' + m.name + '", ';
+       json += '"node" : ' + m.node + '},';
+    }
     json = json.substr(0, json.length - 1);
     json += '], "connections" : [';
     
