@@ -5,6 +5,8 @@ function NodeGraph(){
   var currentNode;
   var currentConnection = {};
   var connections = {};
+  var nodeFields = {};
+  var nodeMethods = {};
   var connectionId = 0;
   var newNode;
   var nodes = {};
@@ -20,6 +22,8 @@ function NodeGraph(){
   var defaultWidth = 100;
   var defaultHeight = 70;
   var paper = new Raphael("canvas", "100", "100");
+  var numM = 0;
+  var numF = 0;
   
 
   win.resize(resizePaper);
@@ -45,7 +49,6 @@ function NodeGraph(){
   });
   
 
-  
   /* Adding a hit bar of height and width 10 and placed at extreme top right
      Used to check if user is clicking on the node connectors */
   canvas.append("<div id='hit' />");
@@ -222,9 +225,8 @@ function NodeGraph(){
     var fields = $(".node .fieldtitle").last();
     
     fields.click(function(){
-      var fieldmenu = $(this).parent().find(".fieldmenu").last();
-      fieldmenu.append("<div class='subfields'><div class='fieldname'>fieldName<\/div><div class='closeattr'>x<\/div><\/div>");
-      ++numField;
+      var fn = prompt(" enter field name ");
+      curr.addField(fn);
       var newfield = $(this).parent().find(".subfields").last();
       var closeattr = $(this).parent().find(".subfields .closeattr").last();
       
@@ -248,9 +250,8 @@ function NodeGraph(){
     var methods = $(".node .methodtitle").last();
     
     methods.click(function(){
-      var methodmenu = $(this).parent().find(".methodmenu").last();
-      methodmenu.append("<div class='submethods'><div class='methodname'>methodName<\/div><div class='closeattr'>x<\/div><\/div>");
-      ++numMethod;
+      var mn = prompt(" enter method name ");
+      curr.addMethod(mn);
       var newmethod = $(this).parent().find(".submethods").last();
       closeattr = $(this).parent().find(".submethods .closeattr").last();
 
@@ -346,6 +347,32 @@ function NodeGraph(){
     n.mouseenter(function(){
       n.css("z-index", zindex++);
     });
+
+
+/***********************************************************************************************************************/
+/*
+/***********************************************************************************************************************/
+    this.addField = function(name){
+      var fieldmenu = curr.content.find(".fieldmenu").last();
+      fieldmenu.append("<div class='subfields'><div class='fieldname'>"+name+"<\/div><div class='closeattr'>x<\/div><\/div>");
+      nodeFields[numF] = {"id":numField,"name":name,"node":curr.id};
+      ++numField;
+      ++numF;
+    }
+/***********************************************************************************************************************/
+
+/***********************************************************************************************************************/
+/*
+/***********************************************************************************************************************/
+    this.addMethod = function(name){
+      var methodmenu = curr.content.find(".methodmenu").last();
+      methodmenu.append("<div class='submethods'><div class='methodname'>"+name+"<\/div><div class='closeattr'>x<\/div><\/div>");
+      nodeMethods[numM] = {"id":numMethod,"name":name,"node":curr.id};
+      ++numMethod;
+      ++numM;
+    }
+/***********************************************************************************************************************/
+
 
 /***********************************************************************************************************************/
 /*
@@ -567,6 +594,8 @@ function NodeGraph(){
     clear();
     nodeId = 0;
     connectionId = 0;
+    numM = 0;
+    numF = 0;
     //defaultNode();
     currentConnection = null;
   }
@@ -613,10 +642,16 @@ function NodeGraph(){
     this.clearAll();
     for (var i in data.nodes){
       var n = data.nodes[i];
-      var ex = (i == "0") ? true : false;
-      var temp = new Node(n.x, n.y, n.width, n.height, ex, n.id);
+      //var ex = (i == "0") ? true : false;
+      var temp = new Node(n.x, n.y, n.width, n.height,false, n.id);
       var addreturns = n.txt.replace(/\\n/g,'\n');
       temp.txt.val(addreturns);
+    }
+    for (var j in data.fields){
+        nodes[data.fields[j].node].addField(data.fields[j].name);
+    }
+    for (var k in data.methods){
+        nodes[data.methods[k].node].addMethod(data.methods[k].name);
     }
     for (var j in data.connections){
       var c = data.connections[j];
@@ -639,6 +674,22 @@ function NodeGraph(){
       json += '"height" : ' + n.height() + ', ';
       json += '"txt" : "' + addSlashes(n.txt.val()) + '"},';
     }
+      json = json.substr(0, json.length - 1);
+      json += '], "fields" : ['
+      for (var j in nodeFields){
+          var f = nodeFields[j];
+          json += '{"id" : ' + f.id + ', ';
+          json += '"name" : "' + f.name + '", ';
+          json += '"node" : ' + f.node + '},';
+      }
+    json = json.substr(0, json.length - 1);
+    json += '], "methods" : ['
+    for (var k in nodeMethods){
+          var m = nodeMethods[k];
+          json += '{"id" : ' + m.id + ', ';
+          json += '"name" : "' + m.name + '", ';
+          json += '"node" : ' + m.node + '},';
+      }
     json = json.substr(0, json.length - 1);
     json += '], "connections" : [';
     
