@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <title>Znode</title>
     <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <link rel="stylesheet" href="css/jquery-ui-1.8.16.custom.css" type="text/css" />
     <script type="text/javascript" src="js/libs/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="js/libs/jquery.ui.draggable.js"></script>
+    <script type="text/javascript" src="js/libs/jquery.ui.resizable.js"></script>
     <script type="text/javascript" src="js/libs/jquery.color.min.js"></script>
     <script type="text/javascript" src="js/libs/raphael-min.js"></script>
     <script type="text/javascript" src="js/znode/nodegraph.js"></script>
@@ -15,6 +19,10 @@
       <div id="fileTitle">Files:</div>
       <div id="files"></div>
     </div>
+    <div id="codeViewer">
+        <div id="className">Class:</div>
+        <div id="classes"></div>
+    </div>
     <div id="overlay"></div>
     <div id="controls">
       <div id="logo" >Znode</div>
@@ -22,6 +30,9 @@
       <div id="open" class="btn">Open</div>
       <div id="clear" class="btn">Clear All</div>
       <div id="help" class="btn">Help</div>
+      <div id="sourcecode" class="btn">Source Code</div>
+      <div id="Inheritance" class="btn">Inheritance</div>
+      <div id="Function" class="btn">Function</div>
       <div id="saveForm">
         <form id="nameForm">
          Name :
@@ -30,6 +41,7 @@
       </div>
     </div>
     <div id="canvas"></div>
+    <ul id="menu"><li>Left</li><li>Right</li><li>Top</li><li>Bottom</li></ul>
   </body>
 </html>
   
