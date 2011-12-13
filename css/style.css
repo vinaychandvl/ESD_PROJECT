@@ -2,9 +2,11 @@ body, html{
   margin : 0;
   padding : 0;
   overflow : hidden;
+  width:100%;
+  height:100%;
 }
 #canvas{
-  background-color : white;
+  background-color : white;z-index: 100;
 }
 #overlay{
   position: absolute;
@@ -44,28 +46,31 @@ body, html{
   margin : 10px;
 }
 
-#openWin{
+#openWin, #codeViewer{
   position : absolute;
-  top : 60px;
-  left : 20px;
-  width : 250px;
-  height : 510px;
+  left:0;
+  top:0;
+  width : 20%;
+  height : 100%;
   background-color : #dcdcdc;
-  z-index : 6000;
-  display : none;
+  display:block;
 }
 
-#files{
+#files, #classes{
   position : relative;
   margin : 10px;
-  
   background-color : white;
-  width : 230px;
-  height : 450px;
+  width : 90%;
+  height : 90%;
   overflow : auto;
 }
 
-#fileTitle{
+.test{
+display:block;
+clear:both;
+}
+
+#fileTitle, #className{
   font-family : Georgia, serif;
   font-style : italic; 
   margin-left : 10px;
@@ -83,9 +88,66 @@ input{
 #saveForm{
   position : relative;
   float : left;
+  display:inline-block;
   font-family : Georgia, serif;
   font-size : 12px;
   padding : 10px 0px 0px 18px;
+}
+
+#searchForm{
+  position : relative;
+  float : left;
+  display:none;
+  font-family : Georgia, serif;
+  font-size : 12px;
+  padding : 10px 0px 0px 18px;
+}
+
+#connection{
+  position : relative;
+  float : left;
+  display:inline-block;
+  padding: 10px 8px 20px 8px;
+  height : 10px;
+  margin: 0px 0px 0px 2px;
+  font-family: Georgia, serif;
+  font-size : 12px;
+  background-color : #efefef;
+}
+
+#connection section{
+      position : relative;
+  float : left;
+}
+#connection section h3{
+display:inline-block;
+height:14px;
+margin: 1px;
+padding: 5px;
+font: bold 12px Arial;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+background: rgb(238,238,238); /* Old browsers */
+background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(204,204,204,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(238,238,238,1)), color-stop(100%,rgba(204,204,204,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%); /* IE10+ */
+background: linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
+cursor: pointer;
+}
+
+#connection section.activeconn h3{
+background: rgb(226,226,226); /* Old browsers */
+background: -moz-linear-gradient(top, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 50%, rgba(209,209,209,1) 51%, rgba(254,254,254,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(226,226,226,1)), color-stop(50%,rgba(219,219,219,1)), color-stop(51%,rgba(209,209,209,1)), color-stop(100%,rgba(254,254,254,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* IE10+ */
+background: linear-gradient(top, rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe',GradientType=0 ); /* IE6-9 */
+cursor: default;
 }
 /* related to NodeGraph & li/ul */
 ul{
@@ -98,7 +160,7 @@ li{
   list-style : none;
 }
 
-li, .file {
+li, .file, .classes{
   font-size : 12px;
   margin: 0;
   cursor : pointer;
@@ -108,16 +170,81 @@ li, .file {
   padding : 5px 10px 5px 10px;
 }
 
+
 textarea, input{ 
   outline:none;
 }
 
-.attributes{
-    padding:0;margin:0;font-size:9px;display:block;width:100%;position:relative;float:left;
+
+#menu{
+    position : absolute;
+    left : 100%;
+    top : 0%;
+    z-index : 5000;
+    border : 1px solid gray;
+    padding : 0;
 }
-.fieldtitle, .methodtitle{
-    height:10px; color:white;background-color:gray; font-size:9px;cursor:pointer;
-    display:block;width:100%;
+
+.tabs {
+width: 100%;
+height: 100%;
+position: relative;
+display: block;
+left:0;
+z-index: 10;
+}
+.tabs section {
+float: left;
+}
+
+.tabs .current .frame{
+display: block;
+border : 5px solid black;
+}
+
+.tabs section h3 {
+height:14px;
+margin: 0 1px 0 0;
+background: #d9d9d9;
+padding: 3px 10px;
+font: bold 12px Arial;
+-moz-border-radius: 5px 5px 0 0;
+-webkit-border-radius: 5px 5px 0 0;
+cursor: url;
+cursor: pointer;
+display: inline-block;
+}
+.tabs section.current h3 { background: #eee; cursor: default; }
+
+.tabs section .frame {
+position:absolute;
+top:20px;
+left:0;
+width: 100%;
+padding: 0 10px;
+font: 12px Arial;
+display: none;
+height:500px;
+overflow: hidden;
+} 
+.tabs section .frame .pane{
+position: absolute;
+left:20%;
+top:0;
+width: 80%;
+margin:0;
+padding: 0;
+font: 12px Arial;
+display: block;
+height:600px;
+border : 1px solid black;
+} 
+
+.fields, .methods{
+    padding:0;margin:0;font-size:9px;width:100%;position:relative;background-color:gray;cursor:pointer; color:white;
+}
+.node.fieldtitle, .node.methodtitle{
+    height:10px; color:white; font-size:9px;cursor:pointer;
 }
 .subfields{
     background-color:green;
@@ -126,9 +253,17 @@ textarea, input{
     background-color:blue;
 }
 .fieldname, .methodname{
-    width:90%; display:inline;color:white;
+    width:90%; display:inline-block;color:white;height:10px;
 }
 .closeattr{
-    width:10%; display:inline;float:right;cursor: pointer;color:white;
-    text-align: center; font-family:sans-serif;
+    width:10%; display:inline-block;float:right;cursor: pointer;color:white;
+    text-align: center; font-family:sans-serif;height:10px;
+}
+
+found{
+    color:red;
+    text-decoration: blink;
+    font-weight: bold;
+    display: inline-block;
+    background-color: yellow;
 }

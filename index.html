@@ -2,45 +2,83 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Znode</title>
+    <title>Lucid JS</title>
     <link rel="stylesheet" href="css/style.css" type="text/css" />
     <link rel="stylesheet" href="css/jquery-ui-1.8.16.custom.css" type="text/css" />
     <script type="text/javascript" src="js/libs/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="js/libs/jquery-ui-1.8.16.custom.min.js"></script>
-    <script type="text/javascript" src="js/libs/jquery.ui.draggable.js"></script>
-    <script type="text/javascript" src="js/libs/jquery.ui.resizable.js"></script>
     <script type="text/javascript" src="js/libs/jquery.color.min.js"></script>
     <script type="text/javascript" src="js/libs/raphael-min.js"></script>
     <script type="text/javascript" src="js/znode/nodegraph.js"></script>
     <script type="text/javascript" src="js/znode/ui.js"></script>
   </head>
   <body>
-    <div id="openWin">
-      <div id="fileTitle">Files:</div>
-      <div id="files"></div>
-    </div>
-    <div id="codeViewer">
-        <div id="className">Class:</div>
-        <div id="classes"></div>
-    </div>
+
+
     <div id="overlay"></div>
     <div id="controls">
-      <div id="logo" >Znode</div>
+      <div id="logo" >Lucid JS</div>
       <div id="save" class="btn">Save</div>
-      <div id="open" class="btn">Open</div>
       <div id="clear" class="btn">Clear All</div>
       <div id="help" class="btn">Help</div>
-      <div id="sourcecode" class="btn">Source Code</div>
-      <div id="Inheritance" class="btn">Inheritance</div>
-      <div id="Function" class="btn">Function</div>
       <div id="saveForm">
         <form id="nameForm">
          Name :
          <input type="text" name="filename" id="filename" spellcheck="false"/>
         </form>
       </div>
+      <div id="connection">
+          <section class="activeconn"><h3 id="association">Association</h3></section>
+          <section><h3 id="inheritance">Inheritance</h3></section>
+         <section><h3 id="composition">Composition</h3></section>
+      </div>
+      <div id="searchForm">
+        <form id="termForm">
+         Search :
+         <input type="text" name="searchval" id="searchval" spellcheck="false"/>
+        </form>
+      </div>
     </div>
-    <div id="canvas"></div>
+    <article class="tabs">
+        <section class="current"><h3 id="chart">CANVAS</h3>
+            <div class="frame">
+            <div id="openWin">
+                <div id="fileTitle">Files:</div>
+                <div id="files"></div>
+            </div>
+            <div id="canvas"  class="pane"></div>
+            </div>
+        </section>
+        <section><h3 id="sourceview">SOURCE CODE VIEW</h3>
+            <div class="frame">
+            <div id="codeViewer">
+                <div id="className">Class:</div>
+                <div id="classes"></div>
+            </div>
+            <div  class="pane"></div>
+            </div>
+        </section>
+        <section><h3 id="inheritanceview">INHERITANCE VIEW</h3>
+            <div class="frame">
+            <div  class="pane"></div>
+            </div>
+        </section>
+        <section><h3 id="functionview">FUNCTION VIEW</h3>
+            <div class="frame">
+            <div  class="pane"></div>
+            </div>
+        </section>
+        <section><h3 id="resourceview">RESOURCE VIEW</h3>
+            <div class="frame">
+            <div  class="pane"></div>
+            </div>
+        </section>
+        <section><h3 id="composotionview">COMPOSITION VIEW</h3>
+            <div class="frame">
+            <div  class="pane"></div>
+            </div>
+        </section>
+    </article>
     <ul id="menu"><li>Left</li><li>Right</li><li>Top</li><li>Bottom</li></ul>
   </body>
 </html>
