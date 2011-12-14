@@ -46,7 +46,7 @@ body, html{
   margin : 10px;
 }
 
-#openWin, #codeViewer{
+#openWin, #codeViewer, #inheritanceViewer, #compositionViewer, #globalViewer, #functionViewer{
   position : absolute;
   left:0;
   top:0;
@@ -56,7 +56,7 @@ body, html{
   display:block;
 }
 
-#files, #classes{
+#files, #classes, #inheritClasses, #compClasses, #globalClasses, #funClasses{
   position : relative;
   margin : 10px;
   background-color : white;
@@ -70,7 +70,7 @@ display:block;
 clear:both;
 }
 
-#fileTitle, #className{
+#fileTitle, #className, #inheritName, #compName, #globalName, #funclassName{
   font-family : Georgia, serif;
   font-style : italic; 
   margin-left : 10px;
@@ -160,7 +160,7 @@ li{
   list-style : none;
 }
 
-li, .file, .classes{
+li, .file, .classes, .inheritClasses, .compClasses,.globalClasses,.inheritparentlist,.inheritchildlist,.compparentlist,.compchildlist, .funclasses, .functionlist{
   font-size : 12px;
   margin: 0;
   cursor : pointer;
@@ -220,11 +220,11 @@ display: inline-block;
 position:absolute;
 top:20px;
 left:0;
-width: 100%;
+width: 1338px;
 padding: 0 10px;
 font: 12px Arial;
 display: none;
-height:500px;
+height:600px;
 overflow: hidden;
 } 
 .tabs section .frame .pane{
@@ -266,4 +266,79 @@ found{
     font-weight: bold;
     display: inline-block;
     background-color: yellow;
+}
+
+#inheritparentClass, #compparentClass, #functionClass{
+  float:left;
+  top:0;
+  width : 25%;
+  height : 100%;
+  background-color : #dcdcdc;
+  display:inline-block; 
+  margin:0;
+  padding:0;
+  
+}
+
+#inheritsourceCode, #compsourceCode{
+  float:left;
+  top:0;
+  width : 50%;
+  height : 100%;
+  background-color : #dcdcdc;
+  display:inline-block;
+  margin:0;
+  padding:0;
+}
+
+#inheritchildClass, #compchildClass{
+  float:left;
+  top:0;
+  width : 25%;
+  height : 100%;
+  background-color : #dcdcdc;
+  display:inline-block;
+  margin:0;
+  padding:0;
+}
+
+#classname1{
+  position: relative;
+  font-family : Georgia, serif;
+  font-style : italic; 
+  margin-left : 10px;
+  margin-top : 10px;
+  width:100%;
+  height:10%;
+  font-weight: bold;
+  text-align: center;
+  display:block;
+}
+
+#inheritsrcview, #compsrcview, #functionsrcview{
+      position: relative;
+  font-family : Georgia, serif;
+margin:10px;
+  width:95%;
+  height:95%;
+  font-weight: bold;
+    display:block;
+    overflow: auto;
+    background-color: white;
+    color:black;
+}
+
+#functionviewClass{
+  float:left;
+  top:0;
+  width : 75%;
+  height : 100%;
+  font-family : Georgia, serif;
+  margin:10px;
+  font-weight: bold;
+  display:inline-block;
+  background-color : #dcdcdc;
+  display:inline-block;
+  margin:0;
+  padding:0;
 }
