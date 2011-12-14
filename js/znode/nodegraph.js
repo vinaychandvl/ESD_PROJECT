@@ -20,15 +20,16 @@ function NodeGraph(){
   var SHIFT = 16;
   var topHeight = $("#controls").height()+14;
   var defaultWidth = 100;
-  var defaultHeight = 120;
-  var paper = new Raphael("canvas", 500, 500);
+  var defaultHeight = 60;
+  var canvaswidth = $("#canvas.pane").width();
+  var canvasheight = $("#canvas.pane").height();
+  var paper = new Raphael("canvas", canvaswidth, canvasheight);
   var numM = 0;
   var numF = 0;
   var srczindex = 1;
   var leftPanel = $("#openWin").width();
   var nodecreated = true;
   var conntype = $(".activeconn").text();
-
   win.resize(resizePaper);
   resizePaper();
   
@@ -61,7 +62,7 @@ function NodeGraph(){
     if (menu.css("display") == "block"){
       if (e.target.tagName != "LI"){
         menu.hide();
-        currentConnection.remove();
+        //currentConnection.remove();
       }
     }
   });
@@ -113,7 +114,7 @@ function NodeGraph(){
     
     if (newNode){
       if (key[SHIFT]){
-        menu.css({"left":mouseX - 10, "top":mouseY});
+        menu.css({"left":leftPanel + mouseX + 10, "top":mouseY});
         menu.show();
       }else{
         var dir;
@@ -232,13 +233,14 @@ function NodeGraph(){
           curr.remove();
         }
       });
+    
     n.append("<textarea class='txt' spellcheck='false' />");
     var txt = $(".node .txt").last();
-    txt.css({"position" : "relative","width":nodeWidth - 4,"height" : "50px","resize" : "none", "overflow" : "hidden",
+    txt.css({"position" : "relative","width":nodeWidth - 4,"height" : nodeHeight - 50,"resize" : "none", "overflow" : "hidden",
              "font-size" : "12px" , "font-family" : "sans-serif", "border" : "none", "z-index" : 100});
           
     this.txt = txt;
-    
+  /*
     n.append("<div class='fields'><div class='fieldtitle'>FIELDS<\/div><div class='fieldmenu'><\/div><\/div>");
     var fields = $(".node .fieldtitle").last();
     
@@ -257,7 +259,7 @@ function NodeGraph(){
     resizeNode(numField, numMethod);
     });
     
-    
+    */
     n.append("<div class='resizer' />");
     var resizer = $(".node .resizer").last();
     
@@ -297,24 +299,26 @@ function NodeGraph(){
     
     this.updateConnections = updateConnections;
     
-    resizeNode(numField, numMethod);
+    //resizeNode(numField, numMethod);
     
     left.mousedown(addLink);
-    right.mousedown(addLink);
+    right.mousedown(addLink)
     top.mousedown(addLink);
-        bottom.mousedown(addLink);
+    bottom.mousedown(addLink);
     
     resizer.mousedown(function(e){
       currentNode = curr;
       e.preventDefault();
-      startDrag(resizer, {left : 100, top : 120, right : 500, bottom : 500},
+      startDrag(resizer, {left : 50, top : 50, right : 500, bottom : 500},
       function(){
         var loc = resizer.position();
         var x = loc.left;
         var y = loc.top;
         n.css({"width" : x + 11,
                "height" : y + 11});
-        
+        var nodeHeight = n.height(); 
+        var nodeWidth = n.width();
+        txt.css({"height":nodeHeight - 50,"width":nodeWidth - 4});
         /*txt.css({"width" : n.width() - 5, "height" : n.height() - bar.height() - 5});*/
         
         positionLeft();
@@ -322,7 +326,7 @@ function NodeGraph(){
         positionTop();
         positionBottom();
         updateConnections();
-        resizeNode(numField, numMethod);
+        //resizeNode(numField, numMethod);
       });
 });
     
@@ -330,7 +334,9 @@ function NodeGraph(){
       currentNode = curr;
       n.css("z-index", zindex++);
       e.preventDefault();
-      startDrag(n, {left : 10, top: 10, right : win.width() - n.width() - 10, bottom : win.height() - n.height() - 10},
+      var framewidth = n.parent().width();
+      var frameheight = n.parent().height();
+      startDrag(n, {left : 10, top: 10, right : framewidth - n.width()-10, bottom: frameheight - n.height()-10},
       updateConnections);
     });
     
@@ -521,22 +527,18 @@ function NodeGraph(){
       e.preventDefault();
       showOverlay();
       var link = paper.path("M 0 0 L 1 1");
-      link.attr({"stroke-width":4,"fill":"red","stroke":"red","arrow-end":"none-wide-long"});
-      currentConnection = link;
-      currentConnection.parent = $(this);
+
       conntype = $(".activeconn").text();			
-    if(conntype=="Association") {
-        link.attr({"fill":"red","stroke":"red","arrow-end":"none-wide-long"});
-        link.connectionType = 1;
-    }
     if(conntype=="Inheritance") {
-        link.attr({"fill":"blue","stroke":"blue","arrow-end": "block-wide-long"});
+        link.attr({"stroke-width":4,"fill":"blue","stroke":"blue","arrow-end": "block-wide-long"});
         link.connectionType = 2;
     }
     if(conntype=="Composition") {
-        link.attr({"fill":"green","stroke":"green","arrow-end":"diamond-wide-long"});
-        link.connectionType = 3;
+        link.attr({"stroke-width":4,"fill":"red","stroke":"red","arrow-end":"diamond-wide-long"});
+        link.connectionType = 1;
     }
+      currentConnection = link;
+      currentConnection.parent = $(this);
       curr.addConnection(link);
       var loc = $(this).position();
       var nLoc = n.position();
@@ -683,7 +685,7 @@ function NodeGraph(){
         var h = defaultHeight;
     }
     var temp = new Node(mouseX, mouseY, w, h);
-    if(temp == null)currentNode = temp; else currentNode = null;
+    currentNode = temp;
     currentConnection = null;
   }
 /***********************************************************************************************************************/
@@ -714,10 +716,10 @@ function NodeGraph(){
       temp.txt.val(addreturns);
     }
     for (i in data.fields){
-        nodes[data.fields[i].node].addField(data.fields[i].name);
+        nodeFields[data.fields[i].id] = data.fields[i];
     }
     for (i in data.methods){
-        nodes[data.methods[i].node].addMethod(data.methods[i].name);
+        nodeMethods[data.methods[i].id] = data.methods[i];
     }
     for (i in data.connections){
       var c = data.connections[i];
@@ -852,18 +854,12 @@ this.searchCode = function(searchTerm){
 /***********************************************************************************************************************/
     function createConnection(a, conA, b, conB, type){
       var link = paper.path("M 0 0 L 1 1");
-      link.attr({"stroke-width":4,"fill":"red","stroke":"red","arrow-end":"none-wide-long"});
+      link.connectionType = type;
     if(type == 1){
-      link.attr({"stroke-width":4,"fill":"red","stroke":"red","arrow-end":"none-wide-long"});	
-      link.connectionType = 1;
+      link.attr({"stroke-width":4,"fill":"red","stroke":"red","arrow-end":"diamond-wide-long"});
     }
     if(type == 2) {
-        link.attr({"fill":"blue","stroke":"blue","arrow-end": "block-wide-long"});
-        link.connectionType = 2;
-    }
-    if(type == 3) {
-        link.attr({"fill":"green","stroke":"green","arrow-end":"diamond-wide-long"});
-        link.connectionType = 3;
+        link.attr({"stroke-width":4,"fill":"blue","stroke":"blue","arrow-end": "block-wide-long"});
     }
       
       link.parent = a[conA];
@@ -888,7 +884,6 @@ this.searchCode = function(searchTerm){
     function connectNode(dir){
     var node, x, y;
     dir = dir.toLowerCase();
-    
     if (dir == "left"){
       x = pathEnd.x + 5;
       //y = pathEnd.y + topHeight - currentNode.height() / 2; 
@@ -924,16 +919,14 @@ this.searchCode = function(searchTerm){
     if (!currentConnection) return;
     if (!currentConnection.parent) return;
     
-    conntype = $(".activeconn").text();
     currentConnection.startNode = currentNode;
     currentConnection.endNode = node;
     currentConnection.startConnection = currentConnection.parent;
     currentConnection.endConnection = node[dir.toLowerCase()];
     
-    if(conntype=="Association") currentConnection.connectionType = 1;
-    if(conntype=="Inheritance") currentConnection.connectionType = 2;
-    if(conntype=="Composition") currentConnection.connectionType = 3;
-    
+    /*if(conntype=="Inheritance") currentConnection.connectionType = 2;
+    if(conntype=="Composition") currentConnection.connectionType = 1;
+    */
     currentConnection.id = connectionId;
     connections[connectionId] = currentConnection;
     connectionId++;
@@ -1000,14 +993,191 @@ this.searchCode = function(searchTerm){
   }
 /***********************************************************************************************************************/
 
+    this.generateFields = function(){
+        nodeFields = new Object;
+        numF = 0;
+        for(var i in nodes){
+            var srccode = addSlashes(nodes[i].txt.val());
+            srccode =srccode.replace(/\./g,"dot");
+            var index = 0;
+            while(index != -1){
+                index = srccode.search("thisdot");
+                srccode = srccode.slice(index + 7);
+                var tmpindex1 = srccode.search("=");
+                var tmpindex2 = srccode.search("thisdot");
+                var tmpindex3 = srccode.search(new RegExp(";"))
+                if((tmpindex1 < tmpindex2) && (tmpindex1 < tmpindex3) && (tmpindex1 != -1)){
+                    var temp = srccode.slice(0,tmpindex1-1);
+                    srccode = srccode.slice(tmpindex1 + 1);
+
+                        var found = false;
+                        for(var j in nodeMethods){
+                            if (nodeMethods[j].name == temp && nodeMethods[j].node == i) found = true;
+                        }
+                        for(var j in nodeFields){
+                            if (nodeFields[j].name == temp && nodeFields[j].node == i) found = true;
+                        } 
+                        if(!found){
+                            nodeFields[numF] = {"id":numF,"name":temp,"node":i}; 
+                            numF++;
+                        }
+
+                }
+                else{
+                    if (tmpindex1 == -1) index =-1;
+                    srccode = srccode.slice(tmpindex2);
+                }  
+            }
+        }
+    }
+    
+    
+    this.generateMethods = function(){
+        nodeMethods = new Object;
+        numM = 0;
+        for(var i in nodes){
+            var srccode = addSlashes(nodes[i].txt.val());
+            srccode =srccode.replace(/\./g,"dot");
+            var index = 0;
+            while(index != -1){
+                index = srccode.search("thisdot");
+                srccode = srccode.slice(index + 7);
+                var tmpindex1 = srccode.search("=");
+                var tmpindex2 = srccode.search("thisdot");
+                var tmpindex3 = srccode.search(";");
+                if((tmpindex1 < tmpindex3)&&(tmpindex1 < tmpindex2)){
+                    var temp = srccode.slice(0,tmpindex1-1);
+                    srccode = srccode.slice(tmpindex1 + 1);
+                    var fnindex = srccode.search("function");
+                    if (fnindex == 1){
+                        var found = false;
+                        for(var j in nodeMethods){
+                            if (nodeMethods[j].name == temp && nodeMethods[j].node == i) found = true;
+                        }
+                        if(!found){
+                            nodeMethods[numM] = {"id":numM,"name":temp,"node":i}; 
+                            numM++;
+                        }
+                    }
+                }
+                else{
+                    srccode = srccode.slice(tmpindex2);
+                }  
+            }
+        }
+    }
+    
     this.viewSource = function(){
+        $(".classes").remove();
         var classList = $("#classes");
-        while($(".classes").length > 0){$(".classes").remove();}
         for (var i in nodes){
             classList.append("<div class='classes'>"+nodes[i].name+"<\/div>");
         }
     }
+    
+    this.viewFunction = function(){
+        while($(".funclasses").length > 0)$(".funclasses").remove();
+        while($("#functioncodetxt").length > 0)$("#functioncodetxt").remove();
+        while($(".functionlist").length > 0)$(".functionlist").remove();
+        var classList = $("#funClasses");
+        for (var i in nodes){
+            classList.append("<div class='funclasses'>"+nodes[i].name+"<\/div>");
+        }
+    }
+
+    this.viewInheritance = function(){
+        var classList = $("#inheritClasses");
+        while($(".inheritClasses").length > 0)$(".inheritClasses").remove();
+        while($(".inheritparentlist").length > 0)$(".inheritparentlist").remove();
+        while($(".inheritchildlist").length > 0)$(".inheritchildlist").remove();
+        $("#inheritsrcview").html("");
+        for (var i in connections){
+            if(connections[i].connectionType == 2){
+                var c = connections[i];
+                var classname = nodes[c.startNode.id].name;
+                var found = false;
+                $(".inheritClasses").each(function () {
+                    if ($(this).text() == classname) found = true;
+            });
+                if(!found)classList.append("<div class='inheritClasses'>"+classname+"<\/div>");
+            }
+        }
+    }
+    
+    this.viewComposition = function(){
+        var classList = $("#compClasses");
+        while($(".compClasses").length > 0){$(".compClasses").remove();}
+        while($(".compparentlist").length > 0)$(".compparentlist").remove();
+        while($(".compchildlist").length > 0)$(".compchildlist").remove();
+        $("#compsrcview").html("");
+        for (var i in connections){
+            if(connections[i].connectionType == 1){
+                var c = connections[i];
+                var classname = nodes[c.startNode.id].name;
+                var found = false;
+                $(".compClasses").each(function () {
+                    if ($(this).text() == classname) found = true;
+            });
+                if(!found)classList.append("<div class='compClasses'>"+classname+"<\/div>");
+            }
+        }
+    }
+    
+    this.viewGlobal = function(){
+        var classList = $("#globalClasses");
+        while($(".globalClasses").length > 0) $(".globalClasses").remove();
+        while($("#globalcodetxt").length > 0) $("#globalcodetxt").remove();
+        for (var i in nodes){
+            var srccode = addSlashes(nodes[i].txt.val());
+            var index = 0;
+            while(index!= -1){
+                index = srccode.search(new RegExp("g_"));
+                srccode = srccode.slice(index + 2);
+                var tmpindex1 = srccode.search("=");
+                var tmpindex2 = srccode.search(new RegExp("g_"));
+                var tmpindex3 = srccode.search(new RegExp(";"));
+                if((tmpindex1 < tmpindex3) && (tmpindex1 != -1)){
+                    var temp = srccode.slice(0,tmpindex1-1);
+                    srccode = srccode.slice(tmpindex1 + 1);
+                    var found = false;
+                    temp = temp.replace(new RegExp(" "),"");
+                    $(".globalClasses").each(function () {
+                    if ($(this).text() == "g_" + temp) found = true;
+                });
+                    if(!found){                         
+                        classList.append("<div class='globalClasses'>g_"+temp+"<\/div>");
+                    }
+                }
+                else{
+                    if (tmpindex1 == -1) index =-1;
+                    srccode = srccode.slice(tmpindex2);
+                }  
+            }
+        }
+    }
+
+$(".funclasses").live("click", function(){
+ var name = $(this).text();
+     var classList = $("#functionClass");
+        while($(".functionlist").length > 0)$(".functionlist").remove();
         
+        for (var i in nodeMethods){
+            if(nodes[nodeMethods[i].node].name == name){
+                var method = nodeMethods[i].name;
+                var found = false;
+                $(".functionlist").each(function () {
+                    if ($(this).text() == method) found = true;
+            });
+                if(!found)classList.append("<div class='functionlist'>"+method+"<\/div>");
+                }
+            }
+  }).live("mouseover", function(){
+    $(this).css({"background-color": "#ededed"});
+  }).live("mouseout", function(){
+    $(this).css({"background-color": "white"});
+  });
+
+
     
  $(".classes").live("click", function(){
     var name = $(this).text();
@@ -1023,6 +1193,275 @@ this.searchCode = function(searchTerm){
     $(this).css({"background-color": "white"});
   });
   
+   $(".inheritClasses").live("click", function(){
+     var name = $(this).text();
+     $("#inheritsourceCode #className1").html(name);
+     var classList = $("#inheritparentClass");
+        while($(".inheritparentlist").length > 0){$(".inheritparentlist").remove();}
+        
+        for (var i in connections){
+            if(connections[i].connectionType == 2){
+                var c = connections[i];
+                var classname = nodes[c.startNode.id].name;
+                if(classname == name)
+                {
+                srccode = addSlashes(nodes[c.startNode.id].txt.val());
+                srccode = stripSlashes1(srccode);
+                var parentclass = nodes[c.endNode.id].name;
+                var found = false;
+                $(".inheritparentlist").each(function () {
+                    if ($(this).text() == parentclass) found = true;
+            });
+                if(!found)classList.append("<div class='inheritparentlist'>"+parentclass+"<\/div>");
+                }
+            }
+        }
+        classList = $("#inheritchildClass");
+        while($(".inheritchildlist").length > 0){$(".inheritchildlist").remove();}
+        
+        for (i in connections){
+            if(connections[i].connectionType == 2){
+                c = connections[i];
+                classname = nodes[c.endNode.id].name;
+                if(classname == name)
+                {
+                var childclass = nodes[c.startNode.id].name;
+                found = false;
+                $(".inheritchildlist").each(function () {
+                    if ($(this).text() == childclass) found = true;
+            });
+                if(!found)classList.append("<div class='inheritchildlist'>"+childclass+"<\/div>");
+                }
+            }
+        }
+        
+        for(i in nodes){
+            if (nodes[i].name == name){
+                var srccode = addSlashes(nodes[i].txt.val());
+                srccode = stripSlashes1(srccode);
+                $("#inheritsrcview").html(srccode);
+            }
+        }
+        
+        $(".inheritparentlist").each(function(){
+            var parentclass = $(this).text();
+            for(var j in nodeFields){
+                if(nodes[nodeFields[j].node].name == parentclass){
+                    var term = "this." + nodeFields[j].name;
+                    var srccode =  $("#inheritsrcview").html();
+                    srccode = srccode.replace(new RegExp(term,"g"),"<found>"+term+"</found>");
+                    $("#inheritsrcview").html(srccode);
+                }
+            }
+            for(var k in nodeMethods){
+                if(nodes[nodeMethods[k].node].name == parentclass){
+                    var term = "this." + nodeMethods[k].name;
+                    var srccode =  $("#inheritsrcview").html();
+                    srccode = srccode.replace(new RegExp(term,"g"),"<found>"+term+"</found>");
+                    $("#inheritsrcview").html(srccode);
+                }
+            }
+            var srccode =  $("#inheritsrcview").html();
+            srccode = srccode.replace(new RegExp(parentclass,"g"),"<found>"+term+"</found>");
+            $("#inheritsrcview").html(srccode);
+        });
+   
+  }).live("mouseover", function(){
+    $(this).css({"background-color": "#ededed"});
+  }).live("mouseout", function(){
+    $(this).css({"background-color": "white"});
+  });
+  
+  
+  
+  
+     $(".compClasses").live("click", function(){
+     var name = $(this).text();
+     $("#compsourceCode #className1").html(name);
+     var classList = $("#compparentClass");
+        while($(".compparentlist").length > 0){$(".compparentlist").remove();}
+        
+        for (var i in connections){
+            if(connections[i].connectionType == 1){
+                var c = connections[i];
+                var classname = nodes[c.startNode.id].name;
+                if(classname == name)
+                {
+                var parentclass = nodes[c.endNode.id].name;
+                var found = false;
+                $(".compparentlist").each(function () {
+                    if ($(this).text() == parentclass) found = true;
+            });
+                if(!found)classList.append("<div class='compparentlist'>"+parentclass+"<\/div>");
+                }
+            }
+        }
+        classList = $("#compchildClass");
+        while($(".compchildlist").length > 0){$(".compchildlist").remove();}
+        
+        for (i in connections){
+            if(connections[i].connectionType == 1){
+                var c = connections[i];
+                var classname = nodes[c.endNode.id].name;
+                if(classname == name)
+                {
+                var childclass = nodes[c.startNode.id].name;
+                var found = false;
+                $(".compchildlist").each(function () {
+                    if ($(this).text() == childclass) found = true;
+            });
+                if(!found)classList.append("<div class='compchildlist'>"+childclass+"<\/div>");
+                }
+            }
+        }
+        
+        for(i in nodes){
+            if (nodes[i].name == name){
+                var srccode = addSlashes(nodes[i].txt.val());
+                srccode = stripSlashes1(srccode);
+                $("#compsrcview").html(srccode);
+            }
+        }
+        
+        $(".compchildlist").each(function(){
+            var childclass = $(this).text();
+            for(var j in nodeFields){
+                if(nodes[nodeFields[j].node].name == childclass){
+                    var term = "this." + nodeFields[j].name;
+                    var srccode =  $("#compsrcview").html();
+                    srccode = srccode.replace(new RegExp(term,"g"),"<found>"+term+"</found>");
+                    $("#compsrcview").html(srccode);
+                }
+            }
+            for(var k in nodeMethods){
+                if(nodes[nodeMethods[k].node].name == childclass){
+                    var term = "this." + nodeMethods[k].name;
+                    var srccode =  $("#compsrcview").html();
+                    srccode = srccode.replace(new RegExp(term,"g"),"<found>"+term+"</found>");
+                    $("#compsrcview").html(srccode);
+                }
+            }
+            var srccode =  $("#compsrcview").html();
+            srccode = srccode.replace(new RegExp(childclass,"g"),"<found>"+term+"</found>");
+            $("#compsrcview").html(srccode);
+        });
+        
+  }).live("mouseover", function(){
+    $(this).css({"background-color": "#ededed"});
+  }).live("mouseout", function(){
+    $(this).css({"background-color": "white"});
+  });
+  
+  
+   $(".inheritparentlist").live("click", function(){
+    var name = $(this).text();
+    for(var i in nodes){
+        if (nodes[i].name == name){
+            var srccode = addSlashes(nodes[i].txt.val());
+            srccode = stripSlashes1(srccode);
+            $("#inheritsrcview").html(srccode);
+        }
+    }
+  }).live("mouseover", function(){
+    $(this).css({"background-color": "#ededed"});
+  }).live("mouseout", function(){
+    $(this).css({"background-color": "white"});
+  });
+  
+     $(".inheritchildlist").live("click", function(){
+    var name = $(this).text();
+    for(var i in nodes){
+        if (nodes[i].name == name){
+            var srccode = addSlashes(nodes[i].txt.val());
+            srccode = stripSlashes1(srccode);
+            $("#inheritsrcview").html(srccode);
+        }
+    }
+  }).live("mouseover", function(){
+    $(this).css({"background-color": "#ededed"});
+  }).live("mouseout", function(){
+    $(this).css({"background-color": "white"});
+  });
+  
+  
+     $(".compparentlist").live("click", function(){
+    var name = $(this).text();
+    for(var i in nodes){
+        if (nodes[i].name == name){
+            var srccode = addSlashes(nodes[i].txt.val());
+            srccode = stripSlashes1(srccode);
+            $("#compsrcview").html(srccode);
+        }
+    }
+    
+  }).live("mouseover", function(){
+    $(this).css({"background-color": "#ededed"});
+  }).live("mouseout", function(){
+    $(this).css({"background-color": "white"});
+  });
+  
+     $(".compchildlist").live("click", function(){
+    var name = $(this).text();
+    for(var i in nodes){
+        if (nodes[i].name == name){
+            var srccode = addSlashes(nodes[i].txt.val());
+            srccode = stripSlashes1(srccode);
+            $("#compsrcview").html(srccode);
+        }
+    }
+  }).live("mouseover", function(){
+    $(this).css({"background-color": "#ededed"});
+  }).live("mouseout", function(){
+    $(this).css({"background-color": "white"});
+  });
+  
+  
+  
+    $(".globalClasses").live("click", function(){
+      
+    while($("#globalcodetxt").length > 0)$("#globalcodetxt").remove();
+    var name = $(this).text();
+    for(i in nodes){
+            var classCode = addSlashes(nodes[i].txt.val());
+            classCode = stripSlashes1(classCode);
+            var index = classCode.search(name);
+            if(index != -1){
+                classCode = classCode.replace(new RegExp(name,"g"),"<found>"+name+"</found>");
+                globalClass(classCode, nodes[i].name);
+            }
+            
+    }
+  }).live("mouseover", function(){
+    $(this).css({"background-color": "#ededed"});
+  }).live("mouseout", function(){
+    $(this).css({"background-color": "white"});
+  });
+  
+  
+  $(".functionlist").live("click", function(){
+      
+    while($("#functioncodetxt").length > 0)$("#functioncodetxt").remove();
+    var name = $(this).text();
+    for(i in nodes){
+            var classCode = addSlashes(nodes[i].txt.val());
+            classCode = stripSlashes1(classCode);
+            var index = classCode.search(name);
+            if(index != -1){
+                classCode = classCode.replace(new RegExp(name,"g"),"<found>"+name+"</found>");
+                functionClass(classCode, nodes[i].name);
+            } 
+    }
+  }).live("mouseover", function(){
+    $(this).css({"background-color": "#ededed"});
+  }).live("mouseout", function(){
+    $(this).css({"background-color": "white"});
+  });
+  
+  
+  
+  
+  
+  
   function source(classCode, name){
     var shown = false;
     if($(".srcclass").length >0 ){
@@ -1033,11 +1472,13 @@ this.searchCode = function(searchTerm){
         }
     });
     }
+    var srcno = $(".srcclass").length;
+    
     if (!shown){
     $(".current .pane").append("<div id='codetxt'><\/div>");
     var s = $(".current .pane #codetxt").last();
     s.css({"position" : "absolute",      
-           "left" : "25px", "top" : "25px",
+           "left" : 25+srcno*20, "top" : 25+srcno*20,
            "width" : "200px", "height" : "200px",   
            "border" : "1px solid gray",
            "background-color" : "white"});
@@ -1114,7 +1555,219 @@ this.searchCode = function(searchTerm){
       srcclass.mousedown(function(e){
       s.css("z-index", srczindex++);
       e.preventDefault();
-      startDrag(s, {left : 0, top: 0, right : win.width() - s.width(), bottom : win.height() - s.height()});
+      var framewidth = s.parent().width();
+      var frameheight = s.parent().height()
+      startDrag(s, {left : 0, top: 0, right : framewidth-s.width(), bottom : frameheight-s.height()});
+    });
+    
+        s.mouseenter(function(){
+      s.css("z-index", srczindex++);
+    });
+    
+  }
+  
+  
+    function globalClass(classCode, name){
+    var shown = false;
+    if($(".globalclass").length >0 ){
+    $(".globalclass").each(function () {
+        if ($(this).text() == name){
+                //alert("source code already shown");
+                shown = true;
+        }
+    });
+    }
+    var srcno = $(".globalclass").length;
+    
+    if (!shown){
+    $(".current .pane").append("<div id='globalcodetxt'><\/div>");
+    var s = $(".current .pane #globalcodetxt").last();
+    s.css({"position" : "absolute",      
+           "left" : 25+srcno*20, "top" : 25+srcno*20,
+           "width" : "200px", "height" : "200px",   
+           "border" : "1px solid gray",
+           "background-color" : "white"});
+    s.css("z-index", srczindex++);
+    this.content = s;
+    var srcHeight = s.height();
+    var srcWidth = s.width();
+    
+    s.append("<div class='globalclass'>"+name+"<\/div>");
+    var srcclass = $(".globalclass").last();
+    srcclass.css({"height" : "20px","text-align":"center" ,
+             "background-color" : "gray", 
+             "padding" : "0", "margin": "0","color":"white",
+             "font-size" : "12px", "cursor" : "pointer"});
+    s.append("<div class='globalsrccode'><p>"+ stripSlashes1(classCode) + "<\/p><\/div>");
+    var srccode = $(".globalsrccode").last();
+    srccode.css({"position" : "absolute", "width" : "100%",
+             "height" : "170px","overflow" : "auto","top":"20px","left":0,
+             "font-size" : "12px" , "font-family" : "sans-serif",
+             "border" : "none","z-index":4});
+    s.append("<div class='globalsrcresizer'><\/div>");
+    var srcresizer = $(".globalsrcresizer").last();
+    srcresizer.css({"position" : "absolute" , "z-index" : 10,
+                 "width" : "10px", "height" : "10px",
+                 "left" : srcWidth - 11, "top" : srcHeight - 11,
+                 "background-color" : "white", "font-size" : "1px",
+                 "border" : "1px solid gray",
+                 "cursor" : "pointer"});
+             
+      s.append("<div class='closex'>X<\/div>");
+      var closex = $("#globalcodetxt .closex").last();
+      closex.css({"position":"absolute","padding-right" : 2, "padding-top" : 1, "padding-left" : 2,
+              "color" : "white", "font-family" : "sans-serif", "top" : 0, "left": 0, 
+              "cursor": "pointer", "font-size" : "14px", "background-color" : "gray","font-weight":"bold",
+          "width":"10px","height":"10px"});
+      
+      closex.hover(function(){
+        closex.css("color","black");
+      }, function(){
+        closex.css("color","white");
+      }).click(function(){
+      
+        if (confirm("Are you sure you want to delete this class?")){
+          $(this).parent().remove();
+        }
+      });
+
+}
+    else{
+        return;
+    }
+    this.width = function(){
+      return s.width();
+    }
+    this.height = function(){
+      return s.height();
+    }
+    
+    
+    
+    srcresizer.mousedown(function(e){
+      e.preventDefault();
+      startDrag(srcresizer, {left : 50, top : 50, right : 400, bottom : 400},
+      function(){
+        var loc = srcresizer.position();
+        var x = loc.left;
+        var y = loc.top;
+        s.css({"width" : x + srcresizer.width() + 1,
+               "height" : y + srcresizer.height() + 1});
+        s.find(".globalsrccode").css({"width": s.width(),"height":s.height() - 30});
+      });
+    });
+    
+      srcclass.mousedown(function(e){
+      s.css("z-index", srczindex++);
+      e.preventDefault();
+      var framewidth = s.parent().width();
+      var frameheight = s.parent().height()
+      startDrag(s, {left : 0, top: 0, right : framewidth-s.width(), bottom : frameheight-s.height()});
+    });
+    
+        s.mouseenter(function(){
+      s.css("z-index", srczindex++);
+    });
+    
+  }
+  
+  
+    function functionClass(classCode, name){
+    var shown = false;
+    if($(".functionclass").length >0 ){
+    $(".functionclass").each(function () {
+        if ($(this).text() == name){
+                //alert("source code already shown");
+                shown = true;
+        }
+    });
+    }
+    var srcno = $(".functionclass").length;
+    
+    if (!shown){
+    $(".current .pane #functionviewClass #functionsrcview").append("<div id='functioncodetxt'><\/div>");
+    var s = $(".current .pane #functioncodetxt").last();
+    s.css({"position" : "absolute",      
+           "left" : 25+srcno*20, "top" : 25+srcno*20,
+           "width" : "200px", "height" : "200px",   
+           "border" : "1px solid gray",
+           "background-color" : "white"});
+    s.css("z-index", srczindex++);
+    this.content = s;
+    var srcHeight = s.height();
+    var srcWidth = s.width();
+    
+    s.append("<div class='functionclass'>"+name+"<\/div>");
+    var srcclass = $(".functionclass").last();
+    srcclass.css({"height" : "20px","text-align":"center" ,
+             "background-color" : "gray", 
+             "padding" : "0", "margin": "0","color":"white",
+             "font-size" : "12px", "cursor" : "pointer"});
+    s.append("<div class='functionsrccode'><p>"+ stripSlashes1(classCode) + "<\/p><\/div>");
+    var srccode = $(".functionsrccode").last();
+    srccode.css({"position" : "absolute", "width" : "100%",
+             "height" : "170px","overflow" : "auto","top":"20px","left":0,
+             "font-size" : "12px" , "font-family" : "sans-serif",
+             "border" : "none","z-index":4});
+    s.append("<div class='functionsrcresizer'><\/div>");
+    var srcresizer = $(".functionsrcresizer").last();
+    srcresizer.css({"position" : "absolute" , "z-index" : 10,
+                 "width" : "10px", "height" : "10px",
+                 "left" : srcWidth - 11, "top" : srcHeight - 11,
+                 "background-color" : "white", "font-size" : "1px",
+                 "border" : "1px solid gray",
+                 "cursor" : "pointer"});
+             
+      s.append("<div class='closex'>X<\/div>");
+      var closex = $("#functioncodetxt .closex").last();
+      closex.css({"position":"absolute","padding-right" : 2, "padding-top" : 1, "padding-left" : 2,
+              "color" : "white", "font-family" : "sans-serif", "top" : 0, "left": 0, 
+              "cursor": "pointer", "font-size" : "14px", "background-color" : "gray","font-weight":"bold",
+          "width":"10px","height":"10px"});
+      
+      closex.hover(function(){
+        closex.css("color","black");
+      }, function(){
+        closex.css("color","white");
+      }).click(function(){
+      
+        if (confirm("Are you sure you want to delete this class?")){
+          $(this).parent().remove();
+        }
+      });
+
+}
+    else{
+        return;
+    }
+    this.width = function(){
+      return s.width();
+    }
+    this.height = function(){
+      return s.height();
+    }
+    
+    
+    
+    srcresizer.mousedown(function(e){
+      e.preventDefault();
+      startDrag(srcresizer, {left : 50, top : 50, right : 400, bottom : 400},
+      function(){
+        var loc = srcresizer.position();
+        var x = loc.left;
+        var y = loc.top;
+        s.css({"width" : x + srcresizer.width() + 1,
+               "height" : y + srcresizer.height() + 1});
+        s.find(".functionsrccode").css({"width": s.width(),"height":s.height() - 30});
+      });
+    });
+    
+      srcclass.mousedown(function(e){
+      s.css("z-index", srczindex++);
+      e.preventDefault();
+      var framewidth = s.parent().width();
+      var frameheight = s.parent().height()
+      startDrag(s, {left : 0, top: 0, right : framewidth-s.width(), bottom : frameheight-s.height()});
     });
     
         s.mouseenter(function(){
