@@ -55,23 +55,33 @@ $(function(){
   
     $("#sourceview").click(function(){
         $("#searchForm").css({"display":"inline-block"});
+        $("#filename").val(nameMessage);
+        while($("#codetxt").length > 0){$("#codetxt").remove();}
         graph.viewSource();
     });
     
   $("#inheritanceview").click(function(){
       $("#searchForm").css({"display":"none"});
+      $("#filename").val(nameMessage);
+      graph.viewInheritance();
   });
   
   $("#functionview").click(function(){
       $("#searchForm").css({"display":"none"});
+      $("#filename").val(nameMessage);
+      graph.viewFunction();
   });
   
-  $("#resourceview").click(function(){
+  $("#globalview").click(function(){
       $("#searchForm").css({"display":"none"});
+      $("#filename").val(nameMessage);
+      graph.viewGlobal();
   });
   
   $("#composotionview").click(function(){
       $("#searchForm").css({"display":"none"});
+      $("#filename").val(nameMessage);
+      graph.viewComposition();
   });
   
  
@@ -133,6 +143,8 @@ $(function(){
       filename[0].focus();
       return;
     }
+    graph.generateMethods();
+    graph.generateFields();
     $.post("json/save.php?", {data:graph.toJSON(), name:name}, function(data){
       alert("Your file was saved.");
       loadFile();
