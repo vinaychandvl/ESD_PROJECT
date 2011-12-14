@@ -28,9 +28,8 @@
         </form>
       </div>
       <div id="connection">
-          <section class="activeconn"><h3 id="association">Association</h3></section>
+          <section class="activeconn"><h3 id="composition">Composition</h3></section>
           <section><h3 id="inheritance">Inheritance</h3></section>
-         <section><h3 id="composition">Composition</h3></section>
       </div>
       <div id="searchForm">
         <form id="termForm">
@@ -60,22 +59,68 @@
         </section>
         <section><h3 id="inheritanceview">INHERITANCE VIEW</h3>
             <div class="frame">
-            <div  class="pane"></div>
+            <div id="inheritanceViewer">
+                <div id="inheritName">Inheritance Classes:</div>
+                <div id="inheritClasses"></div>
+            </div>
+            <div  class="pane">
+                <div id="inheritparentClass">
+                    <div id="className1">Parent Class:</div>
+                </div>
+                <div id="inheritsourceCode">
+                    <div id="className1">Source Code:</div>
+                    <div id="inheritsrcview"></div>
+                </div>
+                <div id="inheritchildClass">
+                    <div id="className1">Child Class:</div>
+                </div>
+            </div>
             </div>
         </section>
         <section><h3 id="functionview">FUNCTION VIEW</h3>
             <div class="frame">
-            <div  class="pane"></div>
+                <div id="functionViewer">
+                <div id="funclassName">Classes:</div>
+                <div id="funClasses"></div>
+            </div>
+            <div  class="pane">
+                <div id="functionClass">
+                    <div id="className1">Functions:</div>
+                </div>
+                <div id="functionviewClass">
+                    <div id="functionsrcview"></div>
+                </div>
+                
+            </div>
             </div>
         </section>
-        <section><h3 id="resourceview">RESOURCE VIEW</h3>
+        <section><h3 id="globalview">GLOBAL VARIABLE VIEW</h3>
             <div class="frame">
+                <div id="globalViewer">
+                <div id="globalName">Global Variables:</div>
+                <div id="globalClasses"></div>
+            </div>
             <div  class="pane"></div>
             </div>
         </section>
         <section><h3 id="composotionview">COMPOSITION VIEW</h3>
             <div class="frame">
-            <div  class="pane"></div>
+            <div id="compositionViewer">
+                <div id="compName">Composition Classes:</div>
+                <div id="compClasses"></div>
+            </div>
+            <div  class="pane">
+                <div id="compparentClass">
+                    <div id="className1">Parent Class:</div>
+                </div>
+                <div id="compsourceCode">
+                    <div id="className1">Source Code:</div>
+                    <div id="compsrcview"></div>
+                </div>
+                <div id="compchildClass">
+                    <div id="className1">Child Class:</div>
+                </div>
+            </div>
             </div>
         </section>
     </article>
